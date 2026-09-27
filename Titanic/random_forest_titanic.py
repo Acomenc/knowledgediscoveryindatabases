@@ -21,19 +21,6 @@ X = train[features].copy()
 y = train["Survived"]
 X_test = test[features].copy()
 
-# missing values imputation
-
-# median because it is less sensitive to outliers than the mean
-X["Age"] = X["Age"].fillna(X["Age"].median())
-X_test["Age"] = X_test["Age"].fillna(X["Age"].median())
-
-X["Fare"] = X["Fare"].fillna(X["Fare"].median())
-X_test["Fare"] = X_test["Fare"].fillna(X["Fare"].median())
-
-# mode for imputing missing values with the most common category
-X["Embarked"] = X["Embarked"].fillna(X["Embarked"].mode()[0])
-X_test["Embarked"] = X_test["Embarked"].fillna(X["Embarked"].mode()[0])
-
 # one-hot encoding
 X = pd.get_dummies(X, columns=["Sex", "Embarked"])
 X_test = pd.get_dummies(X_test, columns=["Sex", "Embarked"])
@@ -46,13 +33,14 @@ X_test = X_test.reindex(columns=X.columns, fill_value=0)
 # Random Forest with tuned hyperparameters (random_forest_titanic_hyparams.py)
 
 model = RandomForestClassifier(
-    n_estimators=750,
-    max_depth=10,
-    min_samples_split=5,
-    min_samples_leaf=1,
-    max_features="sqrt",
-    random_state=1
-)
+    n_estimators=150, 
+    max_depth=None, 
+    min_samples_split=15, 
+    min_samples_leaf=2, 
+    max_features="sqrt", 
+    random_state=1 
+    )
+# Note: Tuning without imputation produced the same Kaggle accuracy despite different hyperparameters.
 
 # Validation
 X_train, X_val, y_train, y_val = train_test_split(
@@ -84,7 +72,7 @@ submission = pd.DataFrame({
 })
 
 submission.to_csv(
-    "titanic/submission_rf_titanic.csv",
+    "titanic/submission_rf_titanic_no_imputation.csv",
     index=False
 )
 

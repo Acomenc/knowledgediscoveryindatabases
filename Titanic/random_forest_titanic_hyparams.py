@@ -24,20 +24,6 @@ y = train["Survived"]
 X_test = test[features].copy()
 
 
-# missing values imputation
-
-# median because it is less sensitive to outliers than the mean
-X["Age"] = X["Age"].fillna(X["Age"].median())
-X_test["Age"] = X_test["Age"].fillna(X["Age"].median())
-
-X["Fare"] = X["Fare"].fillna(X["Fare"].median())
-X_test["Fare"] = X_test["Fare"].fillna(X["Fare"].median())
-
-# mode because embarked is a categorical variable and we want to fill missing values with the most common category
-X["Embarked"] = X["Embarked"].fillna(X["Embarked"].mode()[0])
-X_test["Embarked"] = X_test["Embarked"].fillna(X["Embarked"].mode()[0])
-
-
 # one-hot encoding
 X = pd.get_dummies(X, columns=["Sex", "Embarked"])
 X_test = pd.get_dummies(X_test, columns=["Sex", "Embarked"])
@@ -68,21 +54,22 @@ param_grid1 = {
 }
 """
 Best paramters from param_grid1:
-{'max_depth': 10, 'max_features': 'sqrt', 'min_samples_leaf': 1, 'min_samples_split': 5, 'n_estimators': 500}
-CV accuracy: 0.8406367041198501
+Best parameters:
+{'max_depth': None, 'max_features': 'sqrt', 'min_samples_leaf': 2, 'min_samples_split': 10, 'n_estimators': 200}
+CV accuracy: 0.8350187265917602
 """
 # following up after param_grid1 to refine the search space
 param_grid2 = {
-    "n_estimators": [500, 750, 1000],
-    "max_depth": [None, 8, 10, 12],
-    "min_samples_split": [4,5,6],
-    "min_samples_leaf": [1,2],
+    "n_estimators": [150, 200, 300, 400],
+    "max_depth": [None],
+    "min_samples_split": [10, 15, 20],
+    "min_samples_leaf": [2, 3, 4],
     "max_features": ["sqrt"]
 }
 """
 Best paramters from param_grid2:
-{'max_depth': 10, 'max_features': 'sqrt', 'min_samples_leaf': 1, 'min_samples_split': 5, 'n_estimators': 750}
-CV accuracy: 0.8417602996254681
+{'max_depth': None, 'max_features': 'sqrt', 'min_samples_leaf': 2, 'min_samples_split': 15, 'n_estimators': 150}
+CV accuracy: 0.8372784019975029
 """
 
 # Grid Search
