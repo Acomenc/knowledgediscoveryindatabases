@@ -25,10 +25,6 @@ X_test = test[features].copy()
 X = pd.get_dummies(X, columns=["Sex", "Embarked"])
 X_test = pd.get_dummies(X_test, columns=["Sex", "Embarked"])
 
-# Align columns of test set with training set
-X_test = X_test.reindex(columns=X.columns, fill_value=0)
-
-
 # ---------------------------------------
 # Random Forest with tuned hyperparameters (random_forest_titanic_hyparams.py)
 
