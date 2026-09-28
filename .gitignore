@@ -1,0 +1,26 @@
+# macOS
+.DS_Store
+
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.log
+*.lot
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+
+# Kaggle data (not committed)
+*.csv
+*.zip
+
+# Python virtual environments / caches
+.venv/
+__pycache__/
+*.pyc

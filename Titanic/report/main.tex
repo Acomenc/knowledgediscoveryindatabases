@@ -1,0 +1,73 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{url}
+
+\title{Homework Report}
+\author{Your Name}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\begin{abstract}
+This report examines the prediction of passenger survival in Kaggle's Titanic machine learning competition \cite{kaggle-titanic}. Although chance played a role in survival, passenger characteristics may help explain differences in outcomes. The available predictors include ticket class, sex, age, the combined count of siblings and spouses aboard, the combined count of parents and children aboard, ticket number, fare, cabin number, and port of embarkation. The data contain continuous, categorical, and binary variables, with some entries missing. Feature representation and the treatment of missing data are therefore part of the modelling problem: they affect both the relationships the model can learn and how it handles incomplete passenger records. A random forest classifier was selected using stratified 10-fold cross-validation on the labelled training data. The selected model achieved a mean cross-validation accuracy of 83.73\% and an accuracy of 78.23\% on Kaggle's external test set. We also discuss potential improvements through feature engineering, a more thorough treatment of missing information, and alternative representations and classifiers.
+\end{abstract}
+
+\clearpage
+\setcounter{page}{1}
+
+\section{Approach}
+
+Survival may depend on thresholds and interactions between passenger characteristics. For example, the effect of age could vary with sex and passenger class. Decision trees can capture these nonlinear relationships and interactions through successive splits, without requiring their form to be specified in advance. They require no feature scaling and make few assumptions about the distributions of the predictors, making them a natural starting point for this small dataset with mixed variable types.
+
+A single tree can be sensitive to the particular training sample. We therefore used a random forest to average predictions across trees trained with randomisation, reducing this variability. Tree depth and minimum leaf size provide further control over model complexity. The forest offers a flexible baseline, although the ensemble is less directly interpretable than a single tree and still requires decisions about how to represent categorical variables and handle missing data.
+
+These choices motivate comparisons with other approaches. A binomial generalised additive model (GAM) would model smooth nonlinear relationships between survival probability and variables such as age and fare, alongside categorical effects and selected interactions \cite{wood-gam}. This would test whether a more structured treatment of nonlinearity is sufficient. CatBoost retains tree-based modelling of interactions while handling categorical features internally \cite{catboost-categoricals}, making it a relevant comparison for predictors of mixed types.
+
+Missing observations raise a further issue that predictive flexibility alone cannot resolve. A probabilistic latent-variable model can link continuous, categorical, binary, and count observations through a shared latent representation, using an appropriate observation distribution for each type \cite{nazabal-heterogeneous}. Inference based on the observed entries can retain uncertainty about missing values. Averaging predictions over this uncertainty offers an alternative to treating a single imputed value as known. The usefulness of this approach would depend on whether the more thorough treatment improves survival prediction with the limited training data available.
+
+
+\subsection{Model Setup and Training}
+
+Kaggle's labelled \texttt{train.csv} was used for training, validation, and model selection through stratified 10-fold cross-validation. In each iteration, one fold was held out for validation and the remaining folds were used for fitting. Stratification kept the proportions of survivors and non-survivors approximately the same across folds. The labels in Kaggle's \texttt{test.csv} are hidden, so this file serves as the external test set and is evaluated through a competition submission.
+
+The search covered the number of trees, maximum tree depth, minimum number of samples required to split a node, minimum leaf size, and number of candidate features considered at each split. An initial broad search was followed by a narrower search around the most promising configuration. The final model used 150 trees with no maximum depth limit, required at least 15 samples to split a node and at least 2 samples in each leaf, and considered the square root of the number of available features at each split. This configuration was fitted to the entire training set before predictions were generated for the test set.
+
+
+
+\section{Results}
+
+The selected random forest achieved a mean cross-validation accuracy of 83.73\% on the labelled training data and an accuracy of 78.23\% on Kaggle's external test set. The first is a model-selection estimate; the second measures performance on the competition's hidden labels. These scores alone do not establish which alternative representation or model family would perform best.
+
+For the current submission, the decision to leave missing values without imputation was guided by Kaggle scores. The reported accuracy is therefore not a fully independent assessment of that decision. This choice should instead be determined through the validation procedure described above.
+
+
+\section{Potential Directions}
+
+\subsection{Leveraging Features}
+
+The unused \texttt{Name}, \texttt{Ticket}, and \texttt{Cabin} fields offer opportunities to extend the current model. The \texttt{Name} field provides titles such as Mr., Miss, or Master. Shared tickets could identify groups of travellers, while cabin information could indicate a passenger's deck or location within the ship. Family size and an indicator of travelling alone can also be derived from \texttt{SibSp} and \texttt{Parch}. More exploratory representations include name embeddings, linguistic features of names, and cabin neighbourhoods. The usefulness of these features may depend on how they relate to the existing predictors: a title might complement age and sex, while deck information might add detail to passenger class. Indicators of missing data could also preserve information about which passenger details were recorded.
+
+\subsection{Missing Data and Latent Representations}
+
+A direct extension would be to estimate missing values from other passenger attributes. Multivariate imputation, including tree-based methods, could use relationships that median imputation ignores. Comparing this approach with the forest's native handling of missing values would help establish whether explicitly reconstructing missing information improves prediction.
+
+Probabilistic models offer another option by representing several plausible values for each missing observation. Possible approaches include mixed-family vine copulas and Dirichlet-process mixtures of elliptical copulas; the latter have been proposed specifically for imputing mixed-type data \cite{wang-copula-imputation}. These models could be linked to the existing classifier by generating plausible completed records and averaging the resulting predictions. This would allow uncertainty about missing features to influence the final prediction.
+
+This also suggests learning a compact representation directly from incomplete records. A latent-class model or a small generalised linear latent-variable model (GLLVM), with observation distributions appropriate to each feature type, could capture shared structure among the predictors \cite{niku-gllvm}. Retaining uncertainty about a passenger's latent representation would connect the treatment of missing data with the choice of classifier.
+
+\subsection{Classification Models}
+
+The random forest could itself provide a new representation by encoding the leaves that each passenger reaches \cite{forest-feature-transformation}. Logistic regression or a support vector machine (SVM) could then use these features, combining the interactions learned by the forest with a different classification rule. CatBoost would offer a related extension through boosting and native handling of categorical variables. A GAM or spline-based logistic regression would provide a more structured comparison using smooth effects of age and fare.
+
+For probabilistic latent representations, an SVM could instead use an expected radial basis function (RBF) kernel that averages similarities over passengers' latent distributions. This would allow the classifier to use the uncertainty retained in the representation, linking the preceding ideas through a kernel defined on distributions \cite{sriperumbudur-distributions}.
+
+\bibliographystyle{plain}
+\bibliography{bibliography}
+
+\end{document}
