@@ -4,9 +4,23 @@
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage{url}
+\usepackage{listings}
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\footnotesize,
+    numbers=left,
+    numberstyle=\tiny,
+    numbersep=8pt,
+    breaklines=true,
+    columns=fullflexible,
+    keepspaces=true,
+    showstringspaces=false,
+    frame=single
+}
 
 \title{Homework Report}
-\author{Your Name}
+\author{Anton Henkel,Alessandro Comencini, Erik Soehner}
 \date{\today}
 
 \begin{document}
@@ -14,12 +28,11 @@
 \maketitle
 \thispagestyle{empty}
 
+\setcounter{page}{1}
+
 \begin{abstract}
 This report examines the prediction of passenger survival in Kaggle's Titanic machine learning competition \cite{kaggle-titanic}. Although chance played a role in survival, passenger characteristics may help explain differences in outcomes. The available predictors include ticket class, sex, age, the combined count of siblings and spouses aboard, the combined count of parents and children aboard, ticket number, fare, cabin number, and port of embarkation. The data contain continuous, categorical, and binary variables, with some entries missing. Feature representation and the treatment of missing data are therefore part of the modelling problem: they affect both the relationships the model can learn and how it handles incomplete passenger records. A random forest classifier was selected using stratified 10-fold cross-validation on the labelled training data. The selected model achieved a mean cross-validation accuracy of 83.73\% and an accuracy of 78.23\% on Kaggle's external test set. We also discuss potential improvements through feature engineering, a more thorough treatment of missing information, and alternative representations and classifiers.
 \end{abstract}
-
-\clearpage
-\setcounter{page}{1}
 
 \section{Approach}
 
@@ -69,5 +82,16 @@ For this report ai was used to find and quote different studies and was also use
 
 \bibliographystyle{plain}
 \bibliography{bibliography}
+
+\clearpage
+\appendix
+\section{Python Code}
+
+\subsection{Model Training and Submission}
+\lstinputlisting{../random_forest_titanic.py}
+
+\clearpage
+\subsection{Hyperparameter Tuning}
+\lstinputlisting{../random_forest_titanic_hyparams.py}
 
 \end{document}
