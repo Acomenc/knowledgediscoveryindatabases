@@ -1,0 +1,23 @@
+Proposed Mark: 10
+
+
+
+Report summary:
+
+The authors provided a Jupyter notebook along with their report. In the report, they showed their working procedure. They explain the available data, the features, the challenges, assumptions, and how they preprocess it for their classification model. They explain the use of a decision tree as a baseline classification model and compare it with advancements such as Random Forests and Gradient Boosting. The authors conducted Hyperparameter tuning and experiments with feature subsets to test hypotheses about the relevance of different features. In the paper, they show easy-to-interpret visualizations about the effects of features. The authors report their honest Kaggle test score in comparison to their own and discuss explanations for the performance drop and options for model improvements.
+
+
+
+What makes the report good (subjective selection of what matters and what can fairly be expected given the task):
+
+- The report has a clear and logical structure, beginning with explicit intuitions and assumptions (such as "women and children first"), progressing through feature engineering and model selection, and concluding by analyzing feature effects observed in the trained models.
+- Provides an understandable introduction to the nature and challenges of the existing data.
+- Offers a reproducible description of data preparation.
+- Explains the reasoning behind their data processing choices.
+- Justifies the chosen method: a small dataset warrants a small, robust model to avoid overfitting.
+- Presents insights into feature contributions to survival.
+- Demonstrates understanding of possible model weaknesses and suggests potential improvements.
+
+Improvements:
+
+- The statement that multiple cabins represent wealthier families is okay. Presenting this as a conclusion from data is an overstatement.
