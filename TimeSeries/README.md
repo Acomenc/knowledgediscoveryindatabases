@@ -96,4 +96,6 @@ The built `report/main.pdf` is committed, as in the Titanic report, so the curre
 
 ## Open items
 
+- Write the report text: each section of `report/main.tex` holds red notes with key results and possible interpretations; replace them with our own text and delete the notes blocks.
+- Adapt the suggested AI statement to what we actually did, after checking the course's AI policy.
 - Confirm the group members listed in the report.
