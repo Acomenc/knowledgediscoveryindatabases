@@ -1,4 +1,7 @@
-pair,mean
-within gym,13.94
-within air,4.099
-between domains,12.64
+pair,pairs,euclidean_mean,euclidean_std,dtw_mean,dtw_std
+within gym,55,12.39,3.721,73.18,23.26
+gym real vs simulated,10,10.65,3.506,64.31,24.67
+within air,55,4.099,0.7397,26.06,3.027
+air real vs simulated,10,4.142,0.4427,26.39,3.369
+between domains,121,12.64,4.186,77.96,35.64
+"between domains, real only",1,9.821,0,47.45,0

@@ -66,12 +66,19 @@ uv run plots.py
 
 It writes to `report/figures/`:
 
-- `stl_decomposition.pdf`: trend, seasonal and residual parts of each real series (STL, period 12)
+- `stl_decomposition.pdf`: trend, seasonal and random parts of each real series (robust STL, period 12)
 - `seasonal_profile.pdf`: average month-of-year shape (value divided by a centred 12-month moving average), real against the simulated range
 - `acf_real_vs_simulated.pdf`: autocorrelation of the detrended series up to lag 36, real against the simulated range
-- `distance_matrix.pdf`: pairwise distances between all real and simulated series
 
-It also writes the average distances within each domain and between the domains to `data/simulated/average_distances.csv`. Distances are Euclidean on z-normalised series; because the gym series is longer, each pair is compared over its most recent common number of months (144). DTW was tried and gave the same picture, so it was dropped.
+Finally, compute the distances:
+
+```sh
+uv run distances.py
+```
+
+It writes the mean Euclidean and DTW distances within each domain, between real and simulated series, and between the domains to `data/simulated/average_distances.csv`, and the pairwise Euclidean distances to `report/figures/distance_matrix.pdf`. All series are cut to the last 144 months (the length of AirPassengers) and then z-normalised, so every pair, including pairs within the longer gym domain, is compared over the same length. DTW gives the same ranking as the Euclidean distance; both are reported because the lecture presents DTW as the answer to the alignment problem of the Euclidean distance.
+
+Shared paths, loaders and colours live in `series.py`.
 
 ## Report
 
@@ -81,7 +88,10 @@ It also writes the average distances within each domain and between the domains 
 latexmk -pdf main.tex
 ```
 
+The built `report/main.pdf` is committed, as in the Titanic report, so the current version can be read without LaTeX. Rebuild it and commit it together with any change to the report or its figures.
+
 ## Open items
 
 - Get the generator from Moodle and note here how to run it.
+- Fill in the Moodle generator parameters and its pros and cons in the report (marked TODO).
 - Confirm the group members listed in the report.
