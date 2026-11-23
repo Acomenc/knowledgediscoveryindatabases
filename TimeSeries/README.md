@@ -96,6 +96,6 @@ The built `report/main.pdf` is committed, as in the Titanic report, so the curre
 
 ## Open items
 
-- Write the report text: each section of `report/main.tex` holds red notes with key results and possible interpretations, followed by blue narration ideas on how the section could tell its story; replace both with our own text and delete the blocks.
+- Write the report text: the PDF shows a yellow example skeleton per paragraph (one possible order of points); `report/main.tex` also holds NOTES (key results, possible interpretations) and NARRATION IDEAS as comments above each skeleton. Replace them with our own text and delete the comments and boxes.
 - Adapt the suggested AI statement to what we actually did, after checking the course's AI policy.
 - Confirm the group members listed in the report.
