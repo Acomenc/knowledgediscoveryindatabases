@@ -58,6 +58,21 @@ uv run simulate.py
 
 The current, incomplete month is dropped from the gym series.
 
+Then draw the remaining report figures from the committed CSVs:
+
+```sh
+uv run plots.py
+```
+
+It writes to `report/figures/`:
+
+- `stl_decomposition.pdf`: trend, seasonal and residual parts of each real series (STL, period 12)
+- `seasonal_profile.pdf`: average month-of-year shape (value divided by a centred 12-month moving average), real against the simulated range
+- `acf_real_vs_simulated.pdf`: autocorrelation of the detrended series up to lag 36, real against the simulated range
+- `distance_matrix.pdf`: pairwise distances between all real and simulated series
+
+It also writes the average distances within each domain and between the domains to `data/simulated/average_distances.csv`. Distances are Euclidean on z-normalised series; because the gym series is longer, each pair is compared over its most recent common number of months (144). DTW was tried and gave the same picture, so it was dropped.
+
 ## Report
 
 `report/main.tex` uses the same setup as the Titanic report. To build it, run this from `report/`:
@@ -69,5 +84,4 @@ latexmk -pdf main.tex
 ## Open items
 
 - Get the generator from Moodle and note here how to run it.
-- Choose the distance measure (z-normalised Euclidean and/or DTW) and decide how to compare series of different lengths (about 270 months of gym data vs. 144 for AirPassengers).
 - Confirm the group members listed in the report.
