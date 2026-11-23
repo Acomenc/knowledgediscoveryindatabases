@@ -26,8 +26,8 @@ Only one group member submits the report, which must list the names of all group
 
 ## Generators
 
-- **Moodle app**: the course's random time series generator, with parameters set by hand for each domain.
-- **statsmodels**: Holt-Winters / SARIMA models fitted to each real series and then simulated with random innovations (`.simulate()`). This is a model-based counterpart to the app's hand-set parameters.
+- **Moodle app**: the course's random time series generator. Not used: it runs only on Windows, and no group member has a Windows machine.
+- **statsmodels** (used): a Holt-Winters model fitted to each real series and then simulated with random errors (`.simulate()`), so the parameters come from the data instead of being set by hand.
 
 Keras' `TimeseriesGenerator` was considered and dropped because it only slices an existing series into training windows and does not create new series.
 
@@ -96,6 +96,4 @@ The built `report/main.pdf` is committed, as in the Titanic report, so the curre
 
 ## Open items
 
-- Get the generator from Moodle and note here how to run it.
-- Fill in the Moodle generator parameters and its pros and cons in the report (marked TODO).
 - Confirm the group members listed in the report.
