@@ -1,0 +1,64 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{listings}
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\footnotesize,
+    numbers=left,
+    numberstyle=\tiny,
+    numbersep=8pt,
+    breaklines=true,
+    columns=fullflexible,
+    keepspaces=true,
+    showstringspaces=false,
+    frame=single
+}
+
+\title{Homework Report: Real and Simulated Time Series}
+\author{Anton Henkel, Alessandro Comencini, Erik Soehner}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\setcounter{page}{1}
+
+\section{Domains and Their Time Series}
+% What each series measures, sampling rate, trend, seasonality, irregular events.
+
+\subsection{Gym Interest}
+Monthly worldwide search interest in ``gym'' from Google Trends \cite{google-trends-gym}.
+
+\subsection{Air Passengers}
+Monthly international airline passengers, 1949--1960 \cite{box-jenkins,selva86-airpassengers}.
+
+\section{Simulation}
+
+\subsection{Moodle Generator}
+% Parameters used in the app for each domain.
+
+\subsection{Model-Based Simulation}
+% statsmodels models fitted to the real series and the fitted parameters.
+
+\section{Real and Simulated Series}
+% Figures: real vs.\ simulated series for each domain.
+
+\section{Distances Between Series}
+% Average distance within each domain and between the two domains.
+
+\section{Conclusions}
+% How well the series were simulated; pros and cons of the tools.
+
+\section{Ai use}
+
+\bibliographystyle{plain}
+\bibliography{bibliography}
+
+\end{document}
