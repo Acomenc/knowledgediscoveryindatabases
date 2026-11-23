@@ -80,6 +80,10 @@ It writes the mean Euclidean and DTW distances within each domain, between real 
 
 Shared paths, loaders and colours live in `series.py`.
 
+## Lecture slides
+
+The report follows the terms and distance measures of the lecture slides "Time Series Data Mining" (Moodle). Save them as `lecture/DM on TS.pdf`; the folder is gitignored because this repository is public.
+
 ## Report
 
 `report/main.tex` uses the same setup as the Titanic report. To build it, run this from `report/`:
