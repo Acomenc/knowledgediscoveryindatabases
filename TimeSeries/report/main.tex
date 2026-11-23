@@ -6,6 +6,7 @@
 \usepackage{booktabs}
 \usepackage{url}
 \usepackage{listings}
+\usepackage{xcolor}
 
 \lstset{
     language=Python,
@@ -24,6 +25,10 @@
 \author{Anton Henkel, Alessandro Comencini, Erik Soehner}
 \date{\today}
 
+% Working notes: key results and possible interpretations, to be replaced by our own text.
+% Rendered in red so they cannot end up in the submission by accident. Delete each notes block once written.
+\newenvironment{notes}{\par\color{red}\small\noindent\textbf{Notes (replace with own text):}\begin{itemize}\setlength{\itemsep}{0pt}}{\end{itemize}\par}
+
 \begin{document}
 
 \maketitle
@@ -33,7 +38,10 @@
 
 \section{Domains and Their Time Series}
 
-Following the lecture \cite{lecture-ts}, we describe each series by its \emph{trend}, \emph{seasonal}, and \emph{random} components, combined additively ($X_t = T_t + S_t + R_t$) or multiplicatively ($X_t = T_t \cdot S_t \cdot R_t$). Figure~\ref{fig:decomposition} shows a robust STL decomposition \cite{cleveland-stl} with a period of 12 months; the robust variant keeps isolated events out of the trend and seasonal estimates.
+\begin{notes}
+\item Lecture vocabulary \cite{lecture-ts}: trend, seasonal, random component; additive $X_t = T_t + S_t + R_t$ vs.\ multiplicative $X_t = T_t \cdot S_t \cdot R_t$; autocorrelation.
+\item Figure~\ref{fig:decomposition}: robust STL \cite{cleveland-stl}, period 12. Robust variant: isolated events go into the random part instead of distorting trend/seasonal.
+\end{notes}
 
 \begin{figure}[!htb]
 \centering
@@ -43,14 +51,31 @@ Following the lecture \cite{lecture-ts}, we describe each series by its \emph{tr
 \end{figure}
 
 \subsection{Gym Interest}
-Monthly worldwide search interest in ``gym'' from Google Trends, January 2004 to October 2026 (274 months), relative to the month of peak interest (100) \cite{google-trends-gym}. The \emph{trend} rises slowly until 2019, drops in 2020, and rises steeply from 2022. The \emph{seasonal} component is small: it peaks in January (17\% above the trend), consistent with New Year's resolutions, and is lowest in December (8\% below; Figure~\ref{fig:profile}). The \emph{random} component contains isolated events: a spike in July 2016, which coincides with the release of Pok\'emon Go, whose game locations are called gyms, and a fall in spring 2020, when gyms closed during the COVID-19 pandemic.
+
+\begin{notes}
+\item Source \cite{google-trends-gym}: Google Trends, search term ``gym'', worldwide, monthly, Jan 2004 -- Oct 2026, 274 months. Relative scale, 100 = month of peak interest, no absolute unit.
+\item Trend: slow rise until 2019, drop 2020, steep rise from 2022.
+\item Seasonal: peak January (+17\% vs.\ trend), New Year's resolutions? Low Oct--Dec, lowest December ($-8\%$) (Figure~\ref{fig:profile}). Small compared with the trend.
+\item Random: spike July 2016 (coincides with Pok\'emon Go release, game locations are called ``gyms'', our interpretation); fall spring 2020 (COVID-19 gym closures).
+\end{notes}
 
 \subsection{Air Passengers}
-Monthly international airline passengers in thousands, January 1949 to December 1960 (144 months) \cite{box-jenkins,selva86-airpassengers}. The \emph{trend} grows almost linearly from about 120 to 470 thousand. The \emph{seasonal} component peaks in July and August (22\% above the trend) and is lowest in November (20\% below); its amplitude grows with the level, the typical sign of a multiplicative model. The \emph{random} component is small and has no isolated events.
+
+\begin{notes}
+\item Source \cite{box-jenkins,selva86-airpassengers}: international airline passengers, thousands, monthly, Jan 1949 -- Dec 1960, 144 months (Box \& Jenkins Series G).
+\item Trend: almost linear, about 120 $\to$ 470 thousand.
+\item Seasonal: peak July/August (+22\%), low November ($-20\%$). Amplitude grows with the level $\Rightarrow$ multiplicative model.
+\item Random: small, no isolated events.
+\end{notes}
 
 \section{Simulation}
 
-The course's random time series generator runs only on Windows, and no group member has a Windows machine. Instead, we fitted a Holt-Winters model with additive trend and multiplicative seasonality (period 12) to each real series using statsmodels \cite{seabold-statsmodels} and simulated 10 series of the same length from the fitted initial state, with random multiplicative errors (seed 42). Table~\ref{tab:params} lists the fitted parameters. For gym interest, the high $\alpha$ lets the level follow the series closely and treats most changes as permanent, while the seasonal pattern stays fixed ($\gamma = 0$). For air passengers, the seasonal pattern is updated strongly ($\gamma = 0.60$), so its amplitude can grow with the level.
+\begin{notes}
+\item Course generator (Moodle) only runs on Windows; nobody in the group has a Windows machine $\Rightarrow$ model-based generator instead.
+\item Holt-Winters, statsmodels \cite{seabold-statsmodels}: additive trend, multiplicative seasonality (matches Figure~\ref{fig:decomposition}), period 12. Fitted to each real series.
+\item 10 simulations per domain, same length as the real series, start from the fitted initial state, random multiplicative errors, seed 42.
+\item Table~\ref{tab:params}. Gym: $\alpha = 0.63$ high $\Rightarrow$ level follows the series closely, changes treated as permanent; $\gamma = 0$ $\Rightarrow$ fixed seasonal pattern. Air: $\gamma = 0.60$ $\Rightarrow$ seasonal pattern updated strongly, amplitude can grow with the level. $\beta = 0$ for both.
+\end{notes}
 
 \begin{table}[!htb]
 \centering
@@ -77,13 +102,23 @@ Air & 0.32 & 0.00 & 0.60 & 124.7 & 3.8\% \\
 \label{fig:simulated}
 \end{figure}
 
-The simulated air passenger series stay close to the real one and reproduce the trend and the growing seasonal swings (Figure~\ref{fig:simulated}). The simulated gym series spread out over time: by 2026 they range from about 40 to over 100, and none reproduces the 2020 fall or the steep rise after 2022.
-
-To compare the seasonal and random structure without the trend, we divided each series by its 12-month moving average (Appendix~\ref{app:figures}). For gym interest, the simulations match the real seasonal profile (Figure~\ref{fig:profile}) and \emph{autocorrelation} (Figure~\ref{fig:acf}) almost exactly, because the seasonal pattern is fixed. For air passengers, they blur the seasonal pattern: the summer peak is lower (14\% instead of 22\% above the trend), and a peak appears in March that the real series does not have. Their autocorrelation at lag 1 is also weaker (0.35 against 0.67), so their deviations from the trend are shorter-lived than in the real series. Both effects follow from $\gamma = 0.60$, which lets the seasonal pattern change randomly from year to year.
+\begin{notes}
+\item Figure~\ref{fig:simulated}, air: simulations stay close, reproduce trend and growing seasonal swings.
+\item Gym: simulations spread out over time, range about 40 to over 100 by 2026; none shows the 2020 fall or the rise after 2022.
+\item Detrended comparison (divide by 12-month moving average), figures in Appendix~\ref{app:figures}:
+  gym: seasonal profile (Figure~\ref{fig:profile}) and autocorrelation (Figure~\ref{fig:acf}) match almost exactly (fixed seasonal pattern, $\gamma = 0$);
+  air: seasonal pattern blurred, summer peak +14\% instead of +22\%, extra peak in March; lag-1 autocorrelation 0.35 (simulated mean) vs.\ 0.67 (real) $\Rightarrow$ real deviations from the trend last longer.
+\item Possible interpretation: both air effects come from $\gamma = 0.60$, the simulated seasonal pattern changes randomly from year to year instead of smoothly.
+\end{notes}
 
 \section{Distances Between Series}
 
-We used two measures from the lecture \cite{lecture-ts}: the Euclidean distance, which compares values at the same time point, and dynamic time warping (DTW), which first aligns the two series and so tolerates shifts in time. Each series was z-normalised, since otherwise the distance between domains would mostly reflect their scales rather than their shape. Because the Euclidean distance requires equal lengths, all series were cut to the last 144 months (for gym interest, November 2014 to October 2026); DTW used the same window.
+\begin{notes}
+\item Two measures from the lecture \cite{lecture-ts}: Euclidean (point by point at the same time) and DTW (aligns the series first, tolerates time shifts).
+\item z-normalisation first: otherwise between-domain distances mostly measure scale (0--100 vs.\ thousands), not shape.
+\item Euclidean needs equal length $\Rightarrow$ all series cut to the last 144 months (gym: Nov 2014 -- Oct 2026). DTW on the same window for comparability.
+\item 11 series per domain (1 real + 10 simulated) $\Rightarrow$ 55 pairs within a domain, 121 between.
+\end{notes}
 
 \begin{table}[!htb]
 \centering
@@ -104,18 +139,31 @@ Gym vs.\ air (real series only) & 1 & 9.8 & 47.5 \\
 \label{tab:distances}
 \end{table}
 
-The air passenger series are close to each other, and the real series is as close to the simulations as they are to one another, so the simulation captures this domain well (Table~\ref{tab:distances}). The gym series are about three times further apart, and the real gym series is even closer to the real air passenger series (9.8) than to its own simulations (10.7 on average). After normalisation, both real series share an upward trend with yearly seasonality, whereas the gym simulations drift away during the decade before the comparison window. DTW lowers all distances but gives the same ranking.
+\begin{notes}
+\item Air: real vs.\ simulated (4.1) as close as simulations among themselves (4.1) $\Rightarrow$ domain captured well.
+\item Gym: about 3$\times$ further apart; real gym is closer to real air (9.8) than to its own simulations (10.7).
+\item Possible interpretation: after normalisation both real series are ``upward trend + yearly seasonality''; gym simulations drift during the decade before the comparison window.
+\item DTW: lower values, same ranking as Euclidean.
+\end{notes}
 
 \section{Conclusions}
 
-The Holt-Winters simulation reproduces each domain only in part. For air passengers, it captures the steady trend that dominates the series but blurs the seasonal pattern. For gym interest, it captures the seasonal pattern but not the trend, which changes because of external events (Pok\'emon Go, the pandemic) that a model fitted to past values cannot anticipate; the simulations replace them with random drift. Which part matters depends on how series are compared: whole-series distances mainly reflect the trend, whereas the seasonal profile and autocorrelation reveal the other components. This supports the lecture's point that comparing time series depends on the domain and on the chosen measure \cite{lecture-ts}.
-
-As a generator, the Holt-Winters model estimates its parameters from the real series instead of requiring them to be set by hand, is reproducible from a fixed seed, runs on any platform, and produces any number of series. However, it can only produce trend, seasonality, and independent random errors, so it cannot generate events or structural breaks. It also knows nothing about the domain: three of the ten gym simulations exceed 100 (up to 110), the maximum of the Google Trends scale.
+\begin{notes}
+\item Required by the task: how well the series were simulated, pros and cons of the tool.
+\item How well: air captures the dominant steady trend, blurs seasonality; gym captures seasonality, not the trend (external events: Pok\'emon Go, pandemic; replaced by random drift in the simulations).
+\item Whole-series distances mostly reflect the trend; seasonal profile and autocorrelation show the other components. Links to the lecture: comparing time series is domain dependent and depends on the measure \cite{lecture-ts}.
+\item Pros of Holt-Winters as a generator: parameters estimated from data (not hand-set), reproducible (seed), any platform, any number of series.
+\item Cons: only trend + seasonality + independent errors $\Rightarrow$ no events or structural breaks; no domain knowledge: 3 of 10 gym simulations exceed 100 (max.\ 110), impossible on the Trends scale.
+\end{notes}
 
 \section{Use of AI}
 
-AI tools were used to summarise the lecture slides, to write the analysis scripts, and to improve the style and grammar of this report.
+\begin{notes}
+\item Check the course's AI policy on Moodle first; adapt the statement below so it is accurate for what we actually did.
+\item Suggested statement: ``We used an AI assistant (Claude, Anthropic) to summarise the lecture slides, to help write and debug the Python scripts for simulation, figures and distances, and to propose an outline with key results for this report. We checked the code and all numbers ourselves. The text of the report was written by us; the AI assistant was used for language checks only.''
+\end{notes}
 
+\nocite{*}
 \bibliographystyle{plain}
 \bibliography{bibliography}
 
