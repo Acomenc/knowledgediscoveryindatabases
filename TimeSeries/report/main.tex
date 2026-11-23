@@ -25,9 +25,12 @@
 \author{Anton Henkel, Alessandro Comencini, Erik Soehner}
 \date{\today}
 
-% Working notes: key results and possible interpretations, to be replaced by our own text.
+% Working notes (red): key results and possible interpretations. Narration ideas (blue): how the section could tell its story.
+% Both are to be replaced by our own text.
 % Rendered in red so they cannot end up in the submission by accident. Delete each notes block once written.
 \newenvironment{notes}{\par\color{red}\small\noindent\textbf{Notes (replace with own text):}\begin{itemize}\setlength{\itemsep}{0pt}}{\end{itemize}\par}
+
+\newenvironment{narration}{\par\color{blue}\small\noindent\textbf{Narration ideas:}\begin{itemize}\setlength{\itemsep}{0pt}}{\end{itemize}\par}
 
 \begin{document}
 
@@ -42,6 +45,11 @@
 \item Lecture vocabulary \cite{lecture-ts}: trend, seasonal, random component; additive $X_t = T_t + S_t + R_t$ vs.\ multiplicative $X_t = T_t \cdot S_t \cdot R_t$; autocorrelation.
 \item Figure~\ref{fig:decomposition}: robust STL \cite{cleveland-stl}, period 12. Robust variant: isolated events go into the random part instead of distorting trend/seasonal.
 \end{notes}
+\begin{narration}
+\item Open with the lens: we look at both domains through the lecture's three components, so the reader knows what to look for in every figure.
+\item Say in one line why decomposition comes first: it tells us what a good simulation has to reproduce.
+\item Optional: why robust STL instead of a plain decomposition (two obvious outliers in gym).
+\end{narration}
 
 \begin{figure}[!htb]
 \centering
@@ -58,6 +66,11 @@
 \item Seasonal: peak January (+17\% vs.\ trend), New Year's resolutions? Low Oct--Dec, lowest December ($-8\%$) (Figure~\ref{fig:profile}). Small compared with the trend.
 \item Random: spike July 2016 (coincides with Pok\'emon Go release, game locations are called ``gyms'', our interpretation); fall spring 2020 (COVID-19 gym closures).
 \end{notes}
+\begin{narration}
+\item Lead with what the series measures and its catch (relative scale, no unit), then walk through trend $\to$ seasonal $\to$ random in the same order as the figure.
+\item The events are the memorable part: one concrete sentence each makes the random component tangible.
+\item Flag the Pok\'emon Go link as our reading (``coincides with''), not a proven cause.
+\end{narration}
 
 \subsection{Air Passengers}
 
@@ -67,6 +80,11 @@
 \item Seasonal: peak July/August (+22\%), low November ($-20\%$). Amplitude grows with the level $\Rightarrow$ multiplicative model.
 \item Random: small, no isolated events.
 \end{notes}
+\begin{narration}
+\item Same order as gym, so the two domains are easy to compare side by side.
+\item Use it as the textbook contrast: steady trend, strong regular seasonality, little noise.
+\item The growing seasonal swings are the visual argument for a multiplicative model; point the reader to where to see it in Figure~\ref{fig:decomposition}.
+\end{narration}
 
 \section{Simulation}
 
@@ -76,6 +94,11 @@
 \item 10 simulations per domain, same length as the real series, start from the fitted initial state, random multiplicative errors, seed 42.
 \item Table~\ref{tab:params}. Gym: $\alpha = 0.63$ high $\Rightarrow$ level follows the series closely, changes treated as permanent; $\gamma = 0$ $\Rightarrow$ fixed seasonal pattern. Air: $\gamma = 0.60$ $\Rightarrow$ seasonal pattern updated strongly, amplitude can grow with the level. $\beta = 0$ for both.
 \end{notes}
+\begin{narration}
+\item Start with the honest constraint (Windows-only tool) and turn it into a choice: a generator that learns its parameters from the data.
+\item Connect the model choice back to Section~1: multiplicative seasonality because the decomposition showed it.
+\item Don't explain every parameter; translate only $\alpha$ and $\gamma$ into plain words, since the later sections rely on them.
+\end{narration}
 
 \begin{table}[!htb]
 \centering
@@ -110,6 +133,11 @@ Air & 0.32 & 0.00 & 0.60 & 124.7 & 3.8\% \\
   air: seasonal pattern blurred, summer peak +14\% instead of +22\%, extra peak in March; lag-1 autocorrelation 0.35 (simulated mean) vs.\ 0.67 (real) $\Rightarrow$ real deviations from the trend last longer.
 \item Possible interpretation: both air effects come from $\gamma = 0.60$, the simulated seasonal pattern changes randomly from year to year instead of smoothly.
 \end{notes}
+\begin{narration}
+\item Lead with the visual impression of Figure~\ref{fig:simulated} (air: tight bundle; gym: fan that opens up), then go below the surface.
+\item Frame the appendix analysis as a question: does the model get the seasonal and random structure right once the trend is removed?
+\item Nice twist to build towards: each domain fails in a different place (gym: trend, air: seasonality).
+\end{narration}
 
 \section{Distances Between Series}
 
@@ -119,6 +147,10 @@ Air & 0.32 & 0.00 & 0.60 & 124.7 & 3.8\% \\
 \item Euclidean needs equal length $\Rightarrow$ all series cut to the last 144 months (gym: Nov 2014 -- Oct 2026). DTW on the same window for comparability.
 \item 11 series per domain (1 real + 10 simulated) $\Rightarrow$ 55 pairs within a domain, 121 between.
 \end{notes}
+\begin{narration}
+\item Present each method choice as the answer to a problem: different scales $\to$ normalise; different lengths $\to$ common window; time shifts $\to$ DTW.
+\item Tie the two measures to the lecture explicitly (alignment problem of Euclidean distance).
+\end{narration}
 
 \begin{table}[!htb]
 \centering
@@ -145,6 +177,11 @@ Gym vs.\ air (real series only) & 1 & 9.8 & 47.5 \\
 \item Possible interpretation: after normalisation both real series are ``upward trend + yearly seasonality''; gym simulations drift during the decade before the comparison window.
 \item DTW: lower values, same ranking as Euclidean.
 \end{notes}
+\begin{narration}
+\item Lead with the surprising result: real gym is closer to real air than to its own simulations.
+\item Then explain it: after normalisation, shape is what counts, and the gym simulations lose the shape over time.
+\item Keep DTW to one sentence, it only confirms the ranking.
+\end{narration}
 
 \section{Conclusions}
 
@@ -155,6 +192,11 @@ Gym vs.\ air (real series only) & 1 & 9.8 & 47.5 \\
 \item Pros of Holt-Winters as a generator: parameters estimated from data (not hand-set), reproducible (seed), any platform, any number of series.
 \item Cons: only trend + seasonality + independent errors $\Rightarrow$ no events or structural breaks; no domain knowledge: 3 of 10 gym simulations exceed 100 (max.\ 110), impossible on the Trends scale.
 \end{notes}
+\begin{narration}
+\item Answer the task's two questions directly, in this order: how well simulated, then pros and cons.
+\item One sentence per domain is enough; refer back instead of repeating numbers.
+\item End on the general lesson (what you find depends on how you compare) or on the most concrete con (simulated gym values above 100).
+\end{narration}
 
 \section{Use of AI}
 
@@ -162,6 +204,9 @@ Gym vs.\ air (real series only) & 1 & 9.8 & 47.5 \\
 \item Check the course's AI policy on Moodle first; adapt the statement below so it is accurate for what we actually did.
 \item Suggested statement: ``We used an AI assistant (Claude, Anthropic) to summarise the lecture slides, to help write and debug the Python scripts for simulation, figures and distances, and to propose an outline with key results for this report. We checked the code and all numbers ourselves. The text of the report was written by us; the AI assistant was used for language checks only.''
 \end{notes}
+\begin{narration}
+\item Keep it short, factual and specific: tools, what for, what we checked ourselves.
+\end{narration}
 
 \nocite{*}
 \bibliographystyle{plain}
