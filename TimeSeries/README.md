@@ -4,6 +4,8 @@ Assignment: get familiar with time series and their internal structure by compar
 
 ## Task
 
+Summary below; the verbatim assignment text is in [TASK.md](TASK.md).
+
 - Download the random time series generator (Moodle).
 - Generate typical time series for two domains.
 - Submit a brief report (2–3 pages) that includes:
