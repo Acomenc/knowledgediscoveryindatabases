@@ -40,9 +40,9 @@ uv sync
 uv run fetch_data.py
 ```
 
-`fetch_data.py` downloads AirPassengers into `data/`. The Google Trends series has to be downloaded by hand: open the link above, download the "Interest over time" CSV and save it as `data/gym_trends.csv`.
+The data used for the report is committed in `data/`, so this step is only needed to refresh it. `fetch_data.py` downloads AirPassengers into `data/`. The Google Trends series has to be downloaded by hand: open the link above, download the "Interest over time" CSV and save it as `data/gym_trends.csv`.
 
-CSVs are not committed (see the root `.gitignore`). Trends rescales its values on every request, so numbers can differ slightly between downloads.
+The CSVs in `data/` are committed (an exception to the root `.gitignore`), because Trends rescales its values on every request and a fresh download can differ slightly from the one behind the figures. The committed `gym_trends.csv` was downloaded on 2026-11-23.
 
 Then simulate:
 
@@ -53,6 +53,7 @@ uv run simulate.py
 `simulate.py` fits a Holt-Winters model (additive trend, multiplicative seasonality, period 12) to each real series and simulates 10 series per domain with multiplicative errors (seed 42). Each simulation starts from the fitted initial state and has the same length as the real series. It prints the fitted parameters and writes:
 
 - `data/simulated/{gym,air}_holt_winters.csv`: one column per simulated series
+- `data/simulated/holt_winters_params.csv`: fitted parameters per domain
 - `report/figures/{gym,air}_real_vs_simulated.pdf`: real series against the simulated ones
 
 The current, incomplete month is dropped from the gym series.

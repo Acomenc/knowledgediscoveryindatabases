@@ -18,6 +18,9 @@
 
 # Kaggle data (not committed)
 *.csv
+
+# Time series data and results (committed so figures stay reproducible)
+!TimeSeries/data/**/*.csv
 *.zip
 
 # Python virtual environments / caches
