@@ -23,6 +23,9 @@
 !TimeSeries/data/**/*.csv
 *.zip
 
+# Lecture slides (the repository is public; download them from Moodle)
+TimeSeries/lecture/
+
 # Python virtual environments / caches
 .venv/
 __pycache__/
