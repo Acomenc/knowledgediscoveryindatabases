@@ -50,11 +50,7 @@ Monthly totals of international airline passengers in thousands, January 1949 to
 
 \section{Simulation}
 
-\subsection{Moodle Generator}
-\textbf{TODO:} parameters used in the course's random time series generator for each domain.
-
-\subsection{Model-Based Simulation}
-As a second generator, we fitted a Holt-Winters model with additive trend and multiplicative seasonality (period 12) to each real series using statsmodels \cite{seabold-statsmodels}, matching the multiplicative structure seen in Figure~\ref{fig:decomposition}. From each fitted model, we simulated 10 series of the same length as the real one, starting from the fitted initial state and adding random multiplicative errors (seed 42). Table~\ref{tab:params} lists the fitted smoothing parameters.
+The course's random time series generator runs only on Windows, and no group member has a Windows machine. We therefore used a model-based generator instead: we fitted a Holt-Winters model with additive trend and multiplicative seasonality (period 12) to each real series using statsmodels \cite{seabold-statsmodels}, matching the multiplicative structure seen in Figure~\ref{fig:decomposition}. From each fitted model, we simulated 10 series of the same length as the real one, starting from the fitted initial state and adding random multiplicative errors (seed 42). Table~\ref{tab:params} lists the fitted smoothing parameters.
 
 \begin{table}[!htb]
 \centering
@@ -119,7 +115,7 @@ The Holt-Winters simulation reproduces each domain only in part. For air passeng
 
 The distance results support the lecture's point that comparing time series depends on the domain and on the chosen measure \cite{lecture-ts}. Without normalisation, the two domains could not be compared, and the average distance alone hides that the gym simulations are spread widely while the air passenger simulations are not.
 
-\textbf{TODO:} pros and cons of the Moodle generator compared with the model-based simulation.
+As a generator, the Holt-Winters model has clear advantages: its parameters are estimated from the real series instead of being set by hand, the simulations are reproducible from a fixed seed, and the approach runs on any platform and produces any number of series. Its limits follow from its structure. It can only produce trend, seasonality, and independent random errors, so it cannot generate events or structural breaks, and it underestimates how long deviations from the trend persist. It also knows nothing about the domain: three of the ten gym simulations exceed 100 (up to 110), although Google Trends values cannot exceed 100 by definition.
 
 \section{Use of AI}
 
