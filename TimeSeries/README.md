@@ -42,6 +42,19 @@ uv run fetch_data.py
 
 CSVs are not committed (see the root `.gitignore`). Trends rescales its values on every request, so numbers can differ slightly between downloads.
 
+Then simulate:
+
+```sh
+uv run simulate.py
+```
+
+`simulate.py` fits a Holt-Winters model (additive trend, multiplicative seasonality, period 12) to each real series and simulates 10 series per domain with multiplicative errors (seed 42). Each simulation starts from the fitted initial state and has the same length as the real series. It prints the fitted parameters and writes:
+
+- `data/simulated/{gym,air}_holt_winters.csv`: one column per simulated series
+- `report/figures/{gym,air}_real_vs_simulated.pdf`: real series against the simulated ones
+
+The current, incomplete month is dropped from the gym series.
+
 ## Report
 
 `report/main.tex` uses the same setup as the Titanic report. To build it, run this from `report/`:
