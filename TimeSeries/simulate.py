@@ -42,6 +42,7 @@ DOMAINS = {
 SIM_DIR.mkdir(parents=True, exist_ok=True)
 FIG_DIR.mkdir(parents=True, exist_ok=True)
 rng = np.random.default_rng(SEED)
+param_rows = []
 
 for name, (label, load) in DOMAINS.items():
     real = load()
@@ -59,11 +60,26 @@ for name, (label, load) in DOMAINS.items():
     sims.to_csv(SIM_DIR / f"{name}_holt_winters.csv")
 
     params = fit.params
+    resid_std = np.std(fit.resid / fit.fittedvalues)
     print(f"{name}: {len(real)} months, {real.index.min():%Y-%m} to {real.index.max():%Y-%m}")
     print(f"  alpha={params['smoothing_level']:.3f}  beta={params['smoothing_trend']:.3f}  gamma={params['smoothing_seasonal']:.3f}")
     print(f"  initial level={params['initial_level']:.2f}  initial trend={params['initial_trend']:.3f}")
     print(f"  initial seasonal factors={np.round(params['initial_seasons'], 3).tolist()}")
-    print(f"  residual std (relative)={np.std(fit.resid / fit.fittedvalues):.4f}")
+    print(f"  residual std (relative)={resid_std:.4f}")
+
+    param_rows.append({
+        "domain": name,
+        "months": len(real),
+        "start": f"{real.index.min():%Y-%m}",
+        "end": f"{real.index.max():%Y-%m}",
+        "alpha": params["smoothing_level"],
+        "beta": params["smoothing_trend"],
+        "gamma": params["smoothing_seasonal"],
+        "initial_level": params["initial_level"],
+        "initial_trend": params["initial_trend"],
+        **{f"season_{m + 1:02d}": s for m, s in enumerate(params["initial_seasons"])},
+        "resid_std": resid_std,
+    })
 
     fig, ax = plt.subplots(figsize=(7, 3))
     for i, col in enumerate(sims.columns):
@@ -77,3 +93,5 @@ for name, (label, load) in DOMAINS.items():
     fig.tight_layout()
     fig.savefig(FIG_DIR / f"{name}_real_vs_simulated.pdf")
     plt.close(fig)
+
+pd.DataFrame(param_rows).to_csv(SIM_DIR / "holt_winters_params.csv", index=False, float_format="%.6g")
