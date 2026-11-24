@@ -94,6 +94,8 @@ Air & 0.32 & 0.00 & 0.60 & 124.7 & 3.8\% \\
 \label{fig:simulated}
 \end{figure}
 
+At first impression (Figure~\ref{fig:simulated}), the simulated series appear close to the real series, although the simulated gym series spread further apart over time, leaving the real series roughly in the middle of the range. The simulated air passenger series stay much closer and reflect the overall shape of the real curve well. Here, too, the curves drift slightly apart over time as random errors accumulate in the level and seasonal components. Visually, the seasonal patterns appear well reflected in both domains. We see that by 2026, the simulated gym series range from about 40 to over 100. None of these gym simulations shows the drop in 2020 or the rise after 2022. Overall, the domains generated series fail in a different place: the gym series in the trend, and the air passenger series in the seasonality.
+
 % WRITING NOTES
 % Suggested order
 % 1. First impression (Figure~\ref{fig:simulated})
@@ -130,6 +132,13 @@ Air & 0.32 & 0.00 & 0.60 & 124.7 & 3.8\% \\
 % - Nice twist to build towards: each domain fails in a different place (gym: trend, air: seasonality).
 
 \section{Distances Between Series}
+We measured the distances between the time series with two different distance measures from the lecture~\cite{lecture-ts}:
+\begin{enumerate}
+\item Euclidean distance: compares the values month by month
+\item Dynamic Time Warping (DTW): lines the series up first, so small time shifts do not count
+\end{enumerate}
+
+We z-normalised each series (mean 0 and standard deviation 1), otherwise the distances would mostly measure scale (0--100 for gym vs.\ thousands for air passengers) rather than shape. As Euclidean distance requires equal length, we cut the gym series to the last 144 months (November 2014 to October 2026) to match the air passenger series, and used the same window for DTW for better comparability. In total, we compare 11 series per domain (1 real and 10 simulated), giving 55 pairs within each domain and 121 pairs between them (Table~\ref{tab:distances}).
 
 % WRITING NOTES
 % Suggested order
@@ -176,6 +185,8 @@ Gym vs.\ air (real series only) & 1 & 9.8 & 47.5 \\
 \label{tab:distances}
 \end{table}
 
+A surprising result in Table~\ref{tab:distances} is that the real gym series is closer to the real air passenger series (9.8) than to its own simulations (10.7). For air passengers, the real series is as close to the simulations (4.1) as the simulations are to each other (4.1) showing the simulation captures this domain well. For gym interest, the distances are around three times larger. A likely reason here is that after z-normalisation, both real series share a similar overall shape of an upward trend with a yearly pattern, whereas the gym simulations drift away during the ten years before the 144-month comparison window. DTW leads to the same ranking across all comparisons as Euclidean distance.
+
 % WRITING NOTES
 % Suggested order
 % 1. Surprising result first
@@ -203,6 +214,10 @@ Gym vs.\ air (real series only) & 1 & 9.8 & 47.5 \\
 % - Keep DTW to one sentence, it only confirms the ranking.
 
 \section{Conclusions}
+
+Overall, each domain was simulated well in one aspect and poorly in another. For air passengers, the simulations capture the steady upward trend well, but blur the seasonal pattern. For gym interest, the seasonal pattern is captured well, while the trend is not, since the model cannot foresee external events such as the COVID-19 pandemic and instead produces random drift. This also shows that the evaluation depends on the comparison method. Whole-series distances mainly reflect the trend, the seasonal profile and autocorrelation reveal other components, which is in line with the lecture point that comparing time series depends on both the domain and the measure~\cite{lecture-ts}.
+
+Using Holt-Winters as a generator has some pros and cons. On the positive side, parameters are estimated directly from the real data rather than guessed by hand, the script there is reproducible, platform-independent, and can generate as many series as needed. On the negative side, that model cannot create external events or structural breaks, and it has no domain knowledge. It happens that three of the ten simulated gym series exceed 100 (up to 110), which is impossible on the Google Trends scale.
 
 % WRITING NOTES
 % Suggested order
@@ -234,27 +249,7 @@ Gym vs.\ air (real series only) & 1 & 9.8 & 47.5 \\
 
 \section{Use of AI}
 
-% WRITING NOTES
-% Suggested order
-% 1. Which tool
-%    - Claude (Anthropic)
-% 2. What it was used for
-%    - summarising the lecture slides
-%    - writing and debugging the Python scripts
-%    - proposing an outline with key results
-%    - checking language
-% 3. What we did ourselves
-%    - writing the text
-%    - checking the code and all numbers
-% 4. Before submitting
-%    - check the course rules on Moodle
-%
-% Supporting details
-% - Check the course's AI policy on Moodle first; adapt the statement below so it is accurate for what we actually did.
-% - Suggested statement: ``We used an AI assistant (Claude, Anthropic) to summarise the lecture slides, to help write and debug the Python scripts for simulation, figures and distances, and to propose an outline with key results for this report. We checked the code and all numbers ourselves. The text of the report was written by us; the AI assistant was used for language checks only.''
-%
-% Narration ideas
-% - Keep it short, factual and specific: tools, what for, what we checked ourselves.
+We used AI for writing and debugging the script, checking the paper correctness and making language corrections.
 
 \nocite{*}
 \bibliographystyle{plain}
