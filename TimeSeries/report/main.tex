@@ -50,7 +50,7 @@ The second time series describes the monthly number of international airline pas
 The series shows an approximately linear increasing trend and a strong seasonal pattern, with peaks in July and August (+22%) and a minimum in November (-20%). The seasonal fluctuations increase with the level of the series, suggesting a multiplicative relationship between the components.
 Compared to the gym interest series, it has a more regular structure and a smaller random component.
 
-\subsection{
+\subsection{Decomposition}
 
 In the lecture, we discussed the decomposition of time series into trend, seasonal and random components, which can be combined either additively or multiplicatively.
 To better understand which characteristics we needed to reproduce in our simulations, we decomposed both time series using robust STL (Seasonal-Trend decomposition using LOESS, see \cite{cleveland-stl}) with a period of 12 months. We chose the robust version to reduce the influence of outliers on the estimated trend and seasonal components. The results are shown in Figure~\ref{fig:decomposition}.
