@@ -35,26 +35,25 @@
 
 \section{Domains and Their Time Series}
 
-% WRITING NOTES
-% Suggested order
-% 1. How we look at a time series
-%    - the three components from the lecture: trend, seasonal, random
-%    - they can add up or multiply
-% 2. Why we start with a decomposition
-%    - it shows what a good simulation has to reproduce
-% 3. Method
-%    - robust STL with a 12-month period
-%    - robust, so single unusual months do not distort trend and seasonality
-%    - result in Figure~\ref{fig:decomposition}
-%
-% Supporting details
-% - Lecture vocabulary \cite{lecture-ts}: trend, seasonal, random component; additive $X_t = T_t + S_t + R_t$ vs.\ multiplicative $X_t = T_t \cdot S_t \cdot R_t$; autocorrelation.
-% - Figure~\ref{fig:decomposition}: robust STL \cite{cleveland-stl}, period 12. Robust variant: isolated events go into the random part instead of distorting trend/seasonal.
-%
-% Narration ideas
-% - Open with the lens: we look at both domains through the lecture's three components, so the reader knows what to look for in every figure.
-% - Say in one line why decomposition comes first: it tells us what a good simulation has to reproduce.
-% - Optional: why robust STL instead of a plain decomposition (two obvious outliers in gym).
+The aim of this task was to better understand the structure of time series by analysing and simulating time series from two different domains. 
+We chose gym interest and air passenger numbers, as they show different characteristics in terms of trend, seasonality and random fluctuations. To better understand these characteristics, we decomposed both time series before simulating them.
+
+\subsection{Gym Interest}
+
+The first time series represents the worldwide search interest in the term "gym" between January 2004 and October 2026. It was obtained from Google Trends and It contains 274 monthly observations on a relative scale from 0 to 100.
+The trend increases slowly until 2019, drops in 2020 and increases more rapidly from 2022 onwards. The seasonal component is relatively weak, with the highest interest in January (+17%), possibly due to New Year's resolutions, and the lowest in December (-8%).
+Some irregularities can potentially be explained by external events, such as gym closures during the COVID-19 pandemic in 2020.
+
+\subsection{Air Passengers}
+
+The second time series describes the monthly number of international airline passengers (in thousands) from January 1949 to December 1960, containing 144 observations.
+The series shows an approximately linear increasing trend and a strong seasonal pattern, with peaks in July and August (+22%) and a minimum in November (-20%). The seasonal fluctuations increase with the level of the series, suggesting a multiplicative relationship between the components.
+Compared to the gym interest series, it has a more regular structure and a smaller random component.
+
+\subsection{
+
+In the lecture, we discussed the decomposition of time series into trend, seasonal and random components, which can be combined either additively or multiplicatively.
+To better understand which characteristics we needed to reproduce in our simulations, we decomposed both time series using robust STL (Seasonal-Trend decomposition using LOESS, see \cite{cleveland-stl}) with a period of 12 months. We chose the robust version to reduce the influence of outliers on the estimated trend and seasonal components. The results are shown in Figure~\ref{fig:decomposition}.
 
 \begin{figure}[!htb]
 \centering
@@ -63,99 +62,11 @@
 \label{fig:decomposition}
 \end{figure}
 
-\subsection{Gym Interest}
-
-% WRITING NOTES
-% Suggested order
-% 1. What the data is
-%    - Google Trends interest in ``gym'', worldwide, monthly
-%    - January 2004 to October 2026, 274 months
-%    - relative scale: 100 is the month with the most searches, no real unit
-% 2. Trend
-%    - slow rise until 2019
-%    - drop in 2020
-%    - steep rise from 2022
-% 3. Seasonal pattern
-%    - highest in January, 17% above the trend (New Year's resolutions?)
-%    - lowest in December, 8% below the trend
-%    - small compared with the trend
-% 4. Random part
-%    - spike in July 2016, same month as the Pok\'emon Go release (our guess)
-%    - fall in spring 2020, gyms closed during COVID-19
-% 5. Main point
-%    - the trend is driven by events, the seasonality is weak
-%
-% Supporting details
-% - Source \cite{google-trends-gym}: Google Trends, search term ``gym'', worldwide, monthly, Jan 2004 -- Oct 2026, 274 months. Relative scale, 100 = month of peak interest, no absolute unit.
-% - Trend: slow rise until 2019, drop 2020, steep rise from 2022.
-% - Seasonal: peak January (+17\% vs.\ trend), New Year's resolutions? Low Oct--Dec, lowest December ($-8\%$) (Figure~\ref{fig:profile}). Small compared with the trend.
-% - Random: spike July 2016 (coincides with Pok\'emon Go release, game locations are called ``gyms'', our interpretation); fall spring 2020 (COVID-19 gym closures).
-%
-% Narration ideas
-% - Lead with what the series measures and its catch (relative scale, no unit), then walk through trend $\to$ seasonal $\to$ random in the same order as the figure.
-% - The events are the memorable part: one concrete sentence each makes the random component tangible.
-% - Flag the Pok\'emon Go link as our reading (``coincides with''), not a proven cause.
-
-\subsection{Air Passengers}
-
-% WRITING NOTES
-% Suggested order
-% 1. What the data is
-%    - international airline passengers in thousands, monthly
-%    - January 1949 to December 1960, 144 months
-% 2. Trend
-%    - almost a straight line, from about 120 to 470 thousand
-% 3. Seasonal pattern
-%    - highest in July and August, 22% above the trend
-%    - lowest in November, 20% below the trend
-%    - the yearly swings get bigger as the series grows, so the components multiply
-% 4. Random part
-%    - small, no unusual months
-% 5. Main point
-%    - the opposite of gym: regular and predictable
-%
-% Supporting details
-% - Source \cite{box-jenkins,selva86-airpassengers}: international airline passengers, thousands, monthly, Jan 1949 -- Dec 1960, 144 months (Box \& Jenkins Series G).
-% - Trend: almost linear, about 120 $\to$ 470 thousand.
-% - Seasonal: peak July/August (+22\%), low November ($-20\%$). Amplitude grows with the level $\Rightarrow$ multiplicative model.
-% - Random: small, no isolated events.
-%
-% Narration ideas
-% - Same order as gym, so the two domains are easy to compare side by side.
-% - Use it as the textbook contrast: steady trend, strong regular seasonality, little noise.
-% - The growing seasonal swings are the visual argument for a multiplicative model; point the reader to where to see it in Figure~\ref{fig:decomposition}.
 
 \section{Simulation}
-
-% WRITING NOTES
-% Suggested order
-% 1. Why not the course tool
-%    - the Moodle generator only runs on Windows
-%    - nobody in the group has a Windows machine
-% 2. What we used instead
-%    - Holt-Winters model in Python (statsmodels)
-%    - it learns its parameters from the real series
-% 3. Model setup
-%    - growing trend, seasonality that scales with the level, 12-month period
-%    - matches what the decomposition showed
-% 4. How we simulated
-%    - 10 series per domain, same length as the real one
-%    - each starts where the fitted model starts
-%    - random noise added, fixed seed so it can be repeated
-% 5. What the parameters mean (Table~\ref{tab:params})
-%    - gym: the level follows the real series closely, the seasonal pattern never changes
-%    - air: the seasonal pattern keeps adapting, so its swings can grow
-%
-% Supporting details
-% - Course generator (Moodle) only runs on Windows; nobody in the group has a Windows machine $\Rightarrow$ model-based generator instead.
-% - Holt-Winters, statsmodels \cite{seabold-statsmodels}: additive trend, multiplicative seasonality (matches Figure~\ref{fig:decomposition}), period 12. Fitted to each real series.
-% - 10 simulations per domain, same length as the real series, start from the fitted initial state, random multiplicative errors, seed 42.
-% - Table~\ref{tab:params}. Gym: $\alpha = 0.63$ high $\Rightarrow$ level follows the series closely, changes treated as permanent; $\gamma = 0$ $\Rightarrow$ fixed seasonal pattern. Air: $\gamma = 0.60$ $\Rightarrow$ seasonal pattern updated strongly, amplitude can grow with the level. $\beta = 0$ for both.
-%
-% Narration ideas
-% - Start with the honest constraint (Windows-only tool) and turn it into a choice: a generator that learns its parameters from the data.
-% - Connect the model choice back to Section~1: multiplicative seasonality because the decomposition showed it.
-% - Don't explain every parameter; translate only $\alpha$ and $\gamma$ into plain words, since the later sections rely on them.
+There were two reasons why we did not use the simulator provided on Moodle. First, not all group members had access to Windows. Second, we tried to reproduce our two time series using the tool but could not find suitable parameters that produced similar results. We therefore decided to use the Holt-Winters model \cite{winters1960} from the Python library statsmodels, which allows us to estimate the model parameters directly from the original time series.
+Based on our previous analysis, we chose an additive trend and multiplicative seasonality with a period of 12 months. For each domain, we generated 10 artificial time series of the same length as the original one, starting from the fitted initial state and adding random multiplicative errors. A fixed random seed of 42 was used to ensure reproducibility.
+The estimated parameters are shown in Table \ref{tab:params}. For the gym interest series, the relatively high value of α means that the level adapts quickly to new observations, while the seasonal pattern remains fixed (γ = 0). For the air passenger series, the higher value of γ allows the seasonal pattern to adapt over time. For both series, β is zero, meaning that the trend slope remains constant.
 
 \begin{table}[!htb]
 \centering
