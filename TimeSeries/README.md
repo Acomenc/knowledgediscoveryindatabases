@@ -96,6 +96,6 @@ The built `report/main.pdf` is committed, as in the Titanic report, so the curre
 
 ## Open items
 
-- Write the report text: the PDF shows a yellow example skeleton per paragraph (one possible order of points); `report/main.tex` also holds NOTES (key results, possible interpretations) and NARRATION IDEAS as comments above each skeleton. Replace them with our own text and delete the comments and boxes.
+- Write the report text using the comment blocks in `report/main.tex`. Each block combines the suggested order, supporting details and narration ideas.
 - Adapt the suggested AI statement to what we actually did, after checking the course's AI policy.
 - Confirm the group members listed in the report.
