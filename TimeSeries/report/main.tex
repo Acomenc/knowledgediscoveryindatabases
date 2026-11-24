@@ -40,20 +40,20 @@ We chose gym interest and air passenger numbers, as they show different characte
 
 \subsection{Gym Interest}
 
-The first time series represents the worldwide search interest in the term "gym" between January 2004 and October 2026. It was obtained from Google Trends and It contains 274 monthly observations on a relative scale from 0 to 100.
+The first time series represents the worldwide search interest in the term "gym" between January 2004 and October 2026. It was obtained from Google Trends \cite{google-trends-gym} and It contains 274 monthly observations on a relative scale from 0 to 100.
 The trend increases slowly until 2019, drops in 2020 and increases more rapidly from 2022 onwards. The seasonal component is relatively weak, with the highest interest in January (+17%), possibly due to New Year's resolutions, and the lowest in December (-8%).
 Some irregularities can potentially be explained by external events, such as gym closures during the COVID-19 pandemic in 2020.
 
 \subsection{Air Passengers}
 
-The second time series describes the monthly number of international airline passengers (in thousands) from January 1949 to December 1960, containing 144 observations.
+The second time series describes the monthly number of international airline passengers (in thousands) from January 1949 to December 1960, containing 144 observations \cite{box-jenkins,selva86-airpassengers}.
 The series shows an approximately linear increasing trend and a strong seasonal pattern, with peaks in July and August (+22%) and a minimum in November (-20%). The seasonal fluctuations increase with the level of the series, suggesting a multiplicative relationship between the components.
 Compared to the gym interest series, it has a more regular structure and a smaller random component.
 
 \subsection{Decomposition}
 
 In the lecture, we discussed the decomposition of time series into trend, seasonal and random components, which can be combined either additively or multiplicatively.
-To better understand which characteristics we needed to reproduce in our simulations, we decomposed both time series using robust STL (Seasonal-Trend decomposition using LOESS, see \cite{cleveland-stl}) with a period of 12 months. We chose the robust version to reduce the influence of outliers on the estimated trend and seasonal components. The results are shown in Figure~\ref{fig:decomposition}.
+To better understand which characteristics we needed to reproduce in our simulations, we decomposed both time series using robust STL (Seasonal-Trend decomposition using LOESS) \cite{cleveland-stl} with a period of 12 months. We chose the robust version to reduce the influence of outliers on the estimated trend and seasonal components. The results are shown in Figure~\ref{fig:decomposition}.
 
 \begin{figure}[!htb]
 \centering
@@ -64,7 +64,7 @@ To better understand which characteristics we needed to reproduce in our simulat
 
 
 \section{Simulation}
-There were two reasons why we did not use the simulator provided on Moodle. First, not all group members had access to Windows. Second, we tried to reproduce our two time series using the tool but could not find suitable parameters that produced similar results. We therefore decided to use the Holt-Winters model \cite{winters1960} from the Python library statsmodels, which allows us to estimate the model parameters directly from the original time series.
+There were two reasons why we did not use the simulator provided on Moodle. First, not all group members had access to Windows. Second, we tried to reproduce our two time series using the tool but could not find suitable parameters that produced similar results. We therefore decided to use the Holt-Winters model \cite{winters1960} from the Python library statsmodels \cite{seabold-statsmodels}, which allows us to estimate the model parameters directly from the original time series.
 Based on our previous analysis, we chose an additive trend and multiplicative seasonality with a period of 12 months. For each domain, we generated 10 artificial time series of the same length as the original one, starting from the fitted initial state and adding random multiplicative errors. A fixed random seed of 42 was used to ensure reproducibility.
 The estimated parameters are shown in Table \ref{tab:params}. For the gym interest series, the relatively high value of α means that the level adapts quickly to new observations, while the seasonal pattern remains fixed (γ = 0). For the air passenger series, the higher value of γ allows the seasonal pattern to adapt over time. For both series, β is zero, meaning that the trend slope remains constant.
 
